@@ -1,4 +1,4 @@
-<x-layouts.portal title="Sobre • Portal WebTV">
+<x-layouts.portal title="Sobre • Rede Nativos System">
 
     <div class="max-w-5xl mx-auto px-6 pt-10">
 
@@ -6,7 +6,7 @@
             Sobre Nós
         </h1>
 
-        <img src="https://placehold.co/1200x400?text=Portal+WebTV" class="rounded-xl shadow mb-8 mx-auto">
+        <img src="https://placehold.co/1200x400?text=Rede Nativos System" class="rounded-xl shadow mb-8 mx-auto">
 
         <p class="text-lg leading-relaxed mb-6">
             Somos uma plataforma WebTV dedicada a levar informação,

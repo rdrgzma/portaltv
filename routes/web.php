@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RegionalNewsPublicController;
 use App\Http\Controllers\NoticiaController;
 use App\Http\Controllers\ImovelController;
 use App\Services\WebTV\WebTVService;
@@ -15,6 +16,7 @@ Route::get('/sobre', fn() => view('sobre'))->name('sobre');
 Route::get('/contato', fn() => view('contato'))->name('contato');
 
 Route::get('/noticias', [NoticiaController::class,'index'])->name('noticias.index');
+Route::get('/noticias/regional/{state}/{id}', [RegionalNewsPublicController::class,'show'])->name('noticias.regional.show');
 Route::get('/noticias/{slug}', [NoticiaController::class,'show'])->name('noticias.show');
 
 Route::get('/imoveis', [ImovelController::class,'index'])->name('imoveis.index');

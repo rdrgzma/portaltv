@@ -1,4 +1,4 @@
-<x-layouts.portal title="Contato • Portal WebTV">
+<x-layouts.portal title="Contato • Rede Nativos System">
 
     <div class="max-w-5xl mx-auto px-6 pt-10">
 

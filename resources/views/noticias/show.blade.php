@@ -1,4 +1,4 @@
-<x-layouts.portal :title="$noticia->titulo . ' • Portal WebTV'">
+<x-layouts.portal :title="$noticia->titulo . ' • Rede Nativos System'">
 
     <div class="max-w-4xl mx-auto pt-10 px-6">
 

@@ -3,29 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Models\Noticia;
+use App\Models\RegionalNewsItem;
 use Illuminate\Http\Request;
 
-class NoticiaController 
+class NoticiaController
 {
     public function index(Request $request)
     {
         $query = Noticia::where('ativo', true);
 
-        // Filtro por Categoria
         $query->when($request->filled('categoria'), function ($q) use ($request) {
-            $q->where('categorias', $request->categoria);
+            $q->where('categoria', $request->categoria);
         });
 
-        // (Opcional) Filtro por Texto (Título) caso queira buscar também
         $query->when($request->filled('busca'), function ($q) use ($request) {
             $q->where('titulo', 'like', '%' . $request->busca . '%');
         });
 
         $noticias = $query->orderByDesc('publicado_em')
             ->paginate(9)
-            ->withQueryString(); // Mantém o filtro na paginação
+            ->withQueryString();
 
-        return view('noticias.index', compact('noticias'));
+        // Notícias RSS publicadas (destaques primeiro)
+        $noticiasRss = RegionalNewsItem::publicados()
+            ->orderByDesc('destaque')
+            ->orderByDesc('published_at')
+            ->limit(9)
+            ->get();
+
+        return view('noticias.index', compact('noticias', 'noticiasRss'));
     }
 
     public function show(string $slug)
@@ -36,9 +42,8 @@ class NoticiaController
 
         $relacionadas = Noticia::where('ativo', true)
             ->where('id', '!=', $noticia->id)
-            // Tenta pegar da mesma categoria, se não tiver, pega geral
-            ->where(function($q) use ($noticia) {
-                $q->where('categorias', $noticia->categorias)
+            ->where(function ($q) use ($noticia) {
+                $q->where('categoria', $noticia->categoria)
                   ->orWhereNull('categoria');
             })
             ->latest()

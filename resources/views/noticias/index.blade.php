@@ -1,94 +1,50 @@
 <x-layouts.portal title="Notícias">
 
-    {{-- Definimos as categorias diretamente aqui na View --}}
-    @php
-        $categorias = [
-            'politica'       => 'Política',
-            'esportes'       => 'Esportes',
-            'entretenimento' => 'Entretenimento',
-            'tecnologia'     => 'Tecnologia',
-            'saude'          => 'Saúde',
-            'negocios'       => 'Negócios',
-            'curiosidades'   => 'Curiosidades',
-            'geral'          => 'Geral',
-        ];
-    @endphp
+ 
 
-    <div class="max-w-7xl mx-auto px-6 py-10">
-        
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
-            <h1 class="text-4xl font-bold text-gray-900">Últimas Notícias</h1>
-
-            <form action="{{ route('noticias.index') }}" method="GET" class="w-full md:w-auto">
-                <div class="relative">
-                    <select name="categoria" onchange="this.form.submit()" 
-                        class="w-full md:w-64 bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded-lg focus:outline-none focus:border-blue-500 shadow-sm cursor-pointer">
-                        
-                        <option value="">Todas as Categorias</option>
-                        
-                        @foreach($categorias as $slug => $label)
-                            <option value="{{ $slug }}" {{ request('categoria') === $slug ? 'selected' : '' }}>
-                                {{ $label }}
-                            </option>
-                        @endforeach
-
-                    </select>
-                </div>
-            </form>
+    {{-- Notícias Regionais (RSS publicadas pelo painel) --}}
+    @if(isset($noticiasRss) && $noticiasRss->count() > 0)
+    <div class="max-w-7xl mx-auto px-6 mt-16 mb-16">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="h-8 w-1.5 rounded-full bg-blue-600"></div>
+            <h2 class="text-2xl font-bold text-gray-900">Notícias Regionais</h2>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-10">
-            @forelse($noticias as $noticia)
-                <a href="{{ route('noticias.show', $noticia->slug) }}" class="group bg-white rounded-xl shadow hover:shadow-lg transition duration-300 flex flex-col h-full overflow-hidden">
-                    
-                    <div class="relative h-56 overflow-hidden">
-                        @if($noticia->imagem)
-<img src="{{ $noticia->image_url }}" 
-     class="w-full h-full object-cover transition duration-500 group-hover:scale-110" 
-     alt="{{ $noticia->titulo }}">
+        <div class="grid md:grid-cols-3 gap-8">
+            @foreach($noticiasRss as $rss)
+                <a href="{{ route('noticias.regional.show', ['state' => $rss->state, 'id' => $rss->rss_id]) }}"
+                   class="group bg-white rounded-xl shadow hover:shadow-lg transition duration-300 flex flex-col overflow-hidden">
+                    <div class="relative h-48 overflow-hidden">
+                        @if($rss->image)
+                            <img src="{{ $rss->image }}" alt="{{ $rss->title }}"
+                                 class="w-full h-full object-cover transition duration-500 group-hover:scale-110" loading="lazy">
                         @else
-                            <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">
-                                Sem Imagem
+                            <div class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-300">
+                                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                                </svg>
                             </div>
                         @endif
-
-                        @if($noticia->categoria && isset($categorias[$noticia->categoria]))
-                            <span class="absolute top-3 right-3 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
-                                {{ $categorias[$noticia->categoria] }}
-                            </span>
+                        @if($rss->destaque)
+                            <span class="absolute top-2 left-2 bg-amber-400 text-amber-900 text-[10px] font-black px-2.5 py-1 rounded-full shadow">⭐ Destaque</span>
                         @endif
+                        <span class="absolute top-2 right-2 bg-blue-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">{{ strtoupper($rss->state) }}</span>
                     </div>
-                    
-                    <div class="p-6 flex-1 flex flex-col">
-                        <div class="text-xs text-gray-500 mb-2 flex items-center gap-2">
-                            <span>{{ $noticia->publicado_em ? $noticia->publicado_em->format('d/m/Y') : 'Data n/d' }}</span>
-                        </div>
-
-                        <h2 class="font-bold text-xl mb-3 text-gray-800 leading-tight group-hover:text-blue-600 transition">
-                            {{ $noticia->titulo }}
-                        </h2>
-                        
-                        <p class="text-gray-600 text-sm line-clamp-3 mb-4 flex-1">
-                            {{ $noticia->resumo }}
-                        </p>
-                        
-                        <div class="text-blue-600 font-semibold text-sm mt-auto flex items-center">
-                            Ler matéria completa 
-                            <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                        </div>
+                    <div class="p-5 flex-1 flex flex-col">
+                        <p class="text-xs text-gray-400 mb-2 font-semibold">{{ html_entity_decode($rss->source) }} · {{ optional($rss->published_at)->format('d/m/Y H:i') }}</p>
+                        <h3 class="font-bold text-lg text-gray-800 group-hover:text-blue-600 transition line-clamp-3 leading-snug flex-1">{{ $rss->title }}</h3>
+                        @if($rss->description)
+                            <p class="text-sm text-gray-500 mt-2 line-clamp-2">{{ $rss->description }}</p>
+                        @endif
+                        <span class="mt-4 text-blue-600 text-sm font-semibold flex items-center gap-1">
+                            Ler notícia original
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </span>
                     </div>
                 </a>
-            @empty
-                <div class="col-span-3 py-16 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300">
-                    <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
-                    <p class="text-gray-500 text-lg font-medium">Nenhuma notícia encontrada nesta categoria.</p>
-                    <a href="{{ route('noticias.index') }}" class="text-blue-600 hover:underline mt-2 inline-block font-semibold">Ver todas as notícias</a>
-                </div>
-            @endforelse
-        </div>
-
-        <div class="mt-12">
-            {{ $noticias->links() }}
+            @endforeach
         </div>
     </div>
+    @endif
+
 </x-layouts.portal>

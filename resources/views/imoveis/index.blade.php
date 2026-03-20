@@ -1,4 +1,4 @@
-<x-layouts.portal title="Imóveis • Portal WebTV">
+<x-layouts.portal title="Imóveis • Rede Nativos System">
 
     <div class="max-w-7xl mx-auto px-6 pt-10">
 

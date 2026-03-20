@@ -5,13 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo; // Added this line
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Video extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id',
+        'responsible_id', // Changed from user_id
+        'responsible_type', // Added this line
         'titulo',
         'youtube_url',
         'youtube_video_id',
@@ -20,16 +22,21 @@ class Video extends Model
         'ativo',
     ];
 
-    protected $casts = [
-        'aprovado' => 'boolean',
-        'ativo'    => 'boolean',
-    ];
+    /** @return array<string, string> */
+    protected function casts(): array
+    {
+        return [
+            'aprovado' => 'boolean',
+            'ativo' => 'boolean',
+            'duracao' => 'integer',
+        ];
+    }
 
     /* ================= RELACIONAMENTOS ================= */
 
-    public function user(): BelongsTo
+    public function responsible(): MorphTo
     {
-        return $this->belongsTo(User::class);
+        return $this->morphTo();
     }
 
     public function programacoes(): HasMany

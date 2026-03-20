@@ -13,7 +13,8 @@ class VideoSeeder extends Seeder
         $user = User::first();
 
         Video::create([
-            'user_id' => $user->id,
+            'responsible_id' => $user->id,
+            'responsible_type' => $user::class,
             'titulo' => 'Vídeo Institucional',
             'youtube_url' => 'https://www.youtube.com/watch?v=DyDfgMOUjCI',
             'youtube_video_id' => 'DyDfgMOUjCI',

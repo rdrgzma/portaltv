@@ -14,35 +14,36 @@ class ProgramacaosTable
     {
         return $table
             ->columns([
-                TextColumn::make('video.id')
+                TextColumn::make('video.titulo')
+                    ->label('Vídeo')
                     ->searchable(),
                 TextColumn::make('inicio')
+                    ->label('Início')
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('fim')
+                    ->label('Fim')
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'agendado' => 'gray',
+                        'transmitindo' => 'success',
+                        'finalizado' => 'danger',
+                    })
                     ->searchable(),
                 TextColumn::make('prioridade')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
             ])
-            ->toolbarActions([
+            ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

@@ -18,8 +18,8 @@ use UnitEnum;
 class VideoResource extends Resource
 {
     protected static ?string $model = Video::class;
-      protected static string | UnitEnum | null $navigationGroup = 'WebTV';
-      protected static ?string $navigationLabel = 'Vídeos';
+    protected static string | UnitEnum | null $navigationGroup = 'WebTV';
+    protected static ?string $navigationLabel = 'Vídeos';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPlayCircle;
 

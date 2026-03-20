@@ -16,8 +16,12 @@ class LogsExibicao extends Model
         'visualizacoes',
     ];
 
-    protected $casts = [
-        'inicio' => 'datetime',
-        'fim'    => 'datetime',
-    ];
+    /** @return array<string, string> */
+    protected function casts(): array
+    {
+        return [
+            'inicio' => 'datetime',
+            'fim' => 'datetime',
+        ];
+    }
 }

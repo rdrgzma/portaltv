@@ -15,10 +15,14 @@ class Programacao extends Model
         'prioridade',
     ];
 
-    protected $casts = [
-        'inicio' => 'datetime',
-        'fim'    => 'datetime',
-    ];
+    /** @return array<string, string> */
+    protected function casts(): array
+    {
+        return [
+            'inicio' => 'datetime',
+            'fim' => 'datetime',
+        ];
+    }
 
     public function video(): BelongsTo
     {

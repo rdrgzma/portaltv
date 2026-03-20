@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('logs_exibicaos', function (Blueprint $table) {
+        Schema::create('logs_exibicoes', function (Blueprint $table) {
             $table->id();
             
             $table->string('tipo'); // video, anuncio
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('logs_exibicaos');
+        Schema::dropIfExists('logs_exibicoes');
     }
 };

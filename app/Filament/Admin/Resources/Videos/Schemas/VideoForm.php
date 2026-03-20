@@ -8,6 +8,10 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
+use Filament\Forms\Components\MorphToSelect;
+use App\Models\Admin;
+use App\Models\User;
+
 class VideoForm
 {
     public static function configure(Schema $schema): Schema
@@ -18,12 +22,23 @@ class VideoForm
                 Section::make('Detalhes do Vídeo')
                     ->columns(2)
                     ->schema([
-                        Select::make('user_id')
-                            ->label('Usuário Responsável')
-                            ->relationship('user', 'name')
+                        MorphToSelect::make('responsible')
+                            ->label('Responsável')
+                            ->types([
+                                MorphToSelect\Type::make(User::class)
+                                    ->label('Usuário')
+                                    ->titleAttribute('name'),
+                                MorphToSelect\Type::make(Admin::class)
+                                    ->label('Administrador')
+                                    ->titleAttribute('name'),
+                            ])
                             ->searchable()
                             ->preload()
                             ->required()
+                            ->default(fn () => [
+                                'responsible_id' => auth()->id(),
+                                'responsible_type' => auth()->user()::class,
+                            ])
                             ->columnSpanFull(),
 
                         TextInput::make('titulo')

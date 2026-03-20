@@ -15,37 +15,31 @@ class VideosTable
     {
         return $table
             ->columns([
-                TextColumn::make('user.name')
+                TextColumn::make('responsible.name')
+                    ->label('Responsável')
                     ->searchable(),
                 TextColumn::make('titulo')
-                    ->searchable(),
-                TextColumn::make('youtube_url')
+                    ->label('Título')
                     ->searchable(),
                 TextColumn::make('youtube_video_id')
+                    ->label('ID YouTube')
                     ->searchable(),
                 TextColumn::make('duracao')
+                    ->label('Duração (s)')
                     ->numeric()
                     ->sortable(),
                 IconColumn::make('aprovado')
                     ->boolean(),
                 IconColumn::make('ativo')
                     ->boolean(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
             ])
-            ->toolbarActions([
+            ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

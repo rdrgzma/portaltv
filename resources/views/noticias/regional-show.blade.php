@@ -3,12 +3,12 @@
     <div class="max-w-4xl mx-auto pt-10 px-6 pb-20">
 
         {{-- Breadcrumb --}}
-        <nav class="flex items-center gap-2 text-sm text-gray-500 mb-8">
-            <a href="{{ route('home') }}" class="hover:text-blue-600 transition">Início</a>
+        <nav class="flex items-center gap-2 text-sm text-slate-500 mb-8 font-bold uppercase tracking-widest">
+            <a href="{{ route('home') }}" class="hover:text-cyan-600 dark:hover:text-cyan-500 transition">Início</a>
             <span>/</span>
-            <a href="{{ route('noticias.index') }}" class="hover:text-blue-600 transition">Notícias</a>
+            <a href="{{ route('noticias.index') }}" class="hover:text-cyan-600 dark:hover:text-cyan-500 transition">Notícias</a>
             <span>/</span>
-            <span class="text-gray-800 font-medium line-clamp-1">{{ $noticia->title }}</span>
+            <span class="text-slate-900 dark:text-slate-100 font-black line-clamp-1 italic">{{ $noticia->title }}</span>
         </nav>
 
         {{-- Badges: Região + Fonte --}}
@@ -32,7 +32,7 @@
         </div>
 
         {{-- Título --}}
-        <h1 class="text-3xl md:text-4xl font-black text-gray-900 leading-tight mb-6 tracking-tight">
+        <h1 class="text-2xl md:text-3xl font-black text-slate-900 dark:text-white leading-tight mb-6 tracking-tighter uppercase italic">
             {{ $noticia->title }}
         </h1>
 
@@ -50,9 +50,9 @@
         @endif
 
         {{-- Conteúdo --}}
-        <div class="prose prose-lg max-w-none mb-10 text-gray-700 leading-relaxed">
+        <div class="prose prose-lg dark:prose-invert max-w-none mb-10 text-slate-700 dark:text-slate-100 leading-relaxed font-medium">
             @if($noticia->full_content && $noticia->full_content !== $noticia->description)
-                <p class="text-xl font-medium text-gray-800 mb-6 leading-relaxed">
+                <p class="text-xl font-black text-slate-900 dark:text-white mb-8 leading-tight italic border-l-4 border-cyan-600 dark:border-cyan-500 pl-6 py-2">
                     {{ $noticia->description }}
                 </p>
                 <div class="whitespace-pre-line">{{ $noticia->full_content }}</div>
@@ -86,13 +86,13 @@
                     @php
                         $relUrl = route('noticias.regional.show', ['state' => $rel->state, 'id' => $rel->rss_id]);
                     @endphp
-                    <a href="{{ $relUrl }}" class="group bg-white rounded-xl shadow hover:shadow-lg transition duration-300 overflow-hidden block">
+                    <a href="{{ $relUrl }}" class="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl hover:border-cyan-500/50 transition-all duration-300 overflow-hidden block">
                         <div class="h-40 overflow-hidden">
                             @if($rel->image)
                                 <img src="{{ $rel->image }}" alt="{{ $rel->title }}"
-                                     class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                                     class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
                             @else
-                                <div class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-300">
+                                <div class="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-700">
                                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
                                     </svg>
@@ -100,8 +100,8 @@
                             @endif
                         </div>
                         <div class="p-4">
-                            <p class="text-[10px] text-gray-400 font-bold uppercase mb-1">{{ strtoupper($rel->state) }} · {{ html_entity_decode($rel->source) }}</p>
-                            <h3 class="font-bold text-gray-800 group-hover:text-blue-600 transition line-clamp-2 text-sm leading-snug">
+                            <p class="text-[10px] text-slate-500 font-bold uppercase mb-2 tracking-widest">{{ strtoupper($rel->state) }} · {{ html_entity_decode($rel->source) }}</p>
+                            <h3 class="font-bold text-slate-800 dark:text-slate-100 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition line-clamp-2 text-sm leading-snug">
                                 {{ $rel->title }}
                             </h3>
                         </div>

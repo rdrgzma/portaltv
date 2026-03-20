@@ -36,12 +36,14 @@ class AdminPanelProvider extends PanelProvider
             ->login(Login::class)
             ->authGuard('admin')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Cyan,
             ])
-            ->brandLogo(asset('img/logo/logo.jpeg'))
+            ->brandLogo(fn () => view('filament.admin.logo'))
+            ->brandName('Rede Nativos System')
+            ->favicon(asset('favicon.png'))
             ->brandLogoHeight('3rem')
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->defaultThemeMode(config('filakit.theme_mode', ThemeMode::Dark))
+            ->defaultThemeMode(ThemeMode::Dark)
             ->discoverClusters(in: app_path('Filament/Admin/Clusters'), for: 'App\\Filament\\Admin\\Clusters')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')

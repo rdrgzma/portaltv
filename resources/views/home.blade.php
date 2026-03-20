@@ -20,8 +20,116 @@
                 
                 @if($heroType === 'video')
                     <div class="w-full shadow-2xl rounded-2xl overflow-hidden border border-slate-800 bg-black aspect-video relative group">
-                        <livewire:webtv-player />
-                        <div class="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider animate-pulse">
+                        
+                        {{-- INÍCIO DO PLAYER WEBTV (Substituiu o Livewire) --}}
+                        <div id="webtv-youtube-player" class="absolute inset-0 w-full h-full pointer-events-none"></div>
+                        
+                        <button id="webtv-unmute-btn" class="absolute inset-0 w-full h-full z-10 flex items-center justify-center bg-black/40 text-white font-bold tracking-widest uppercase cursor-pointer transition hover:bg-black/20" onclick="ativarSom()" style="display: none;">
+                            <span class="bg-red-600 px-4 py-2 rounded-full animate-pulse shadow-[0_0_15px_rgba(220,38,38,0.7)] text-xs md:text-sm">
+                                Clique para ativar o som
+                            </span>
+                        </button>
+
+                        <script>
+                            let tvPlayer;
+                            let nextVideoTimer;
+
+                            // 1. Carrega a API do YouTube
+                            const tag = document.createElement('script');
+                            tag.src = "https://www.youtube.com/iframe_api";
+                            const firstScriptTag = document.getElementsByTagName('script')[0];
+                            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+                            // 2. Chamado pelo YouTube quando o script carrega
+                            function onYouTubeIframeAPIReady() {
+                                buscarProgramacaoAtual();
+                            }
+
+                            // 3. Consome a API da WebTV
+                            async function buscarProgramacaoAtual() {
+                                try {
+                                    const response = await fetch('/api/webtv/current');
+                                    const result = await response.json();
+
+                                    // Verifica se está offline
+                                    if (result.status !== 'online' || !result.data) {
+                                        console.log("WebTV Offline.");
+                                        return;
+                                    }
+
+                                    const video = result.data;
+                                    const seekTo = Math.abs(video.seek_to);
+
+                                    // Exibe o botão de som na primeira carga
+                                    if (!tvPlayer) {
+                                        document.getElementById('webtv-unmute-btn').style.display = 'flex';
+                                        iniciarPlayer(video.youtube_video_id, seekTo);
+                                    } else {
+                                        tvPlayer.loadVideoById({
+                                            videoId: video.youtube_video_id,
+                                            startSeconds: seekTo
+                                        });
+                                    }
+
+                                    // 4. Calcula o tempo restante com precisão em milissegundos
+                                    const agora = new Date().getTime();
+                                    const fimProgramacao = new Date(video.next_update_at).getTime();
+                                    let tempoRestanteMs = fimProgramacao - agora;
+
+                                    if (tempoRestanteMs < 0) {
+                                        tempoRestanteMs = 5000; // Fallback de 5s se houver delay
+                                    }
+
+                                    // Agenda a próxima checagem
+                                    clearTimeout(nextVideoTimer);
+                                    nextVideoTimer = setTimeout(buscarProgramacaoAtual, tempoRestanteMs);
+
+                                } catch (error) {
+                                    console.error("Erro na grade da WebTV:", error);
+                                    setTimeout(buscarProgramacaoAtual, 10000); 
+                                }
+                            }
+
+                            // 5. Instancia o IFrame do YouTube
+                            function iniciarPlayer(videoId, startSeconds) {
+                                tvPlayer = new YT.Player('webtv-youtube-player', {
+                                    videoId: videoId,
+                                    playerVars: {
+                                        autoplay: 1,      
+                                        mute: 1,          // Mutado para permitir Autoplay
+                                        controls: 0,      // Sem controles na tela
+                                        disablekb: 1,     // Sem controle por teclado
+                                        fs: 0,            // Sem tela cheia nativa do YT
+                                        modestbranding: 1,
+                                        rel: 0,
+                                        start: startSeconds 
+                                    },
+                                    events: {
+                                        onReady: function(event) {
+                                            event.target.playVideo();
+                                        },
+                                        onStateChange: function(event) {
+                                            // Se por acaso acabar antes do nosso timer
+                                            if (event.data === YT.PlayerState.ENDED) {
+                                                buscarProgramacaoAtual();
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+
+                            // 6. Ativa o som pelo botão
+                            function ativarSom() {
+                                if (tvPlayer && typeof tvPlayer.unMute === 'function') {
+                                    tvPlayer.unMute();
+                                    tvPlayer.setVolume(100);
+                                    document.getElementById('webtv-unmute-btn').style.display = 'none';
+                                }
+                            }
+                        </script>
+                        {{-- FIM DO PLAYER WEBTV --}}
+
+                        <div class="absolute top-4 left-4 z-20 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider animate-pulse">
                             No Ar
                         </div>
                     </div>
@@ -143,4 +251,4 @@
         </div>
     </section>
 
-</x-layouts.portal>
+</x-layouts.portal>

@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Services\WebTV\WebTVService;
 use Illuminate\Http\JsonResponse;
 
-final class PlayerController extends Controller
+final class PlayerController
 {
     public function __construct(
         private readonly WebTVService $webTVService
@@ -35,7 +34,7 @@ final class PlayerController extends Controller
         // Se a programação começou às 14:00 e agora são 14:05, o seek é 300 segundos.
         $now = now();
         $inicio = $current->inicio;
-        $seekTo = $now->diffInSeconds($inicio);
+        $seekTo = $now->getTimestamp() - $inicio->getTimestamp();
 
         return response()->json([
             'status' => 'online',

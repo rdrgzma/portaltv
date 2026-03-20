@@ -136,7 +136,7 @@
                         {{ $imovel->titulo }}
                     </h3>
                     <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mt-1">
-                        {{ $imovel->tipo }} · R$ {{ number_format($imovel->preco, 2, ',', '.') }}
+                        {{ ucfirst($imovel->tipo) }} · R$ {{ number_format($imovel->valor, 2, ',', '.') }}
                     </p>
                 </a>
             @endforeach

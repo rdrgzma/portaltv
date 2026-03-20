@@ -29,7 +29,7 @@
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
                         <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                             <span class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Tipo</span>
-                            <span class="text-slate-900 dark:text-slate-100 font-bold">{{ $imovel->tipo }}</span>
+                            <span class="text-slate-900 dark:text-slate-100 font-bold">{{ ucfirst($imovel->tipo) }}</span>
                         </div>
                         <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                             <span class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Quartos</span>
@@ -56,7 +56,7 @@
                 <div class="bg-slate-950 dark:bg-white p-8 rounded-[2rem] shadow-2xl text-center border-4 border-cyan-500/20">
                     <span class="block text-cyan-500 dark:text-cyan-600 text-xs font-black uppercase tracking-[0.3em] mb-3">Valor do Investimento</span>
                     <h3 class="text-white dark:text-slate-900 text-4xl font-black italic tracking-tighter mb-8 leading-none">
-                        R$ {{ number_format($imovel->preco, 2, ',', '.') }}
+                        R$ {{ number_format($imovel->valor, 2, ',', '.') }}
                     </h3>
                     
                     <a href="https://wa.me/{{ $pure_whatsapp }}?text=Olá! Tenho interesse no imóvel: {{ $imovel->titulo }}" 

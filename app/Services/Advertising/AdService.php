@@ -15,8 +15,8 @@ class AdService
     {
         return Anuncio::where('tipo', $tipo)
             ->where('ativo', true)
-            ->whereDate('inicio', '<=', now())
-            ->whereDate('fim', '>=', now())
+            ->whereDate('inicio', '<=', now()->toDateString())
+            ->whereDate('fim', '>=', now()->toDateString())
             ->orderByDesc('prioridade')
             ->get();
     }
@@ -69,8 +69,8 @@ class AdService
     {
         return Anuncio::where('tipo', $placement)
             ->where('ativo', true)
-            ->whereDate('inicio', '<=', now())
-            ->whereDate('fim', '>=', now())
+            ->whereDate('inicio', '<=', now()->toDateString())
+            ->whereDate('fim', '>=', now()->toDateString())
             ->orderByDesc('prioridade')
             ->first();
     }

@@ -10,6 +10,7 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Components\FileUpload;
 class AnuncioForm
 {
+
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -19,15 +20,19 @@ class AnuncioForm
                     ->required(),
                 Select::make('tipo')
                     ->options([
-                        'banner_horizontal' => 'Banner horizontal',
-                        'banner_lateral_direita' => 'Banner lateral',
-                        'banner_lateral_esquerda' => 'Banner lateral',
-                        'video' => 'Vídeo',
+                        'banner_horizontal' => 'Inferior Horizontal',
+                        'banner_lateral_direita' => 'Lateral Direita (Vertical)',
+                        'banner_lateral_esquerda' => 'Lateral Esquerda (Vertical)',
                     ])
                     ->required(),
                 FileUpload::make('arquivo')
+                    ->label('Mídia (Imagem ou Vídeo)')
+                    ->directory('anuncios')
+                    ->acceptedFileTypes(['image/*', 'video/mp4', 'video/webm', 'video/ogg']) // Aceita imagens e vídeos
+                    ->maxSize(20480) // Limite de 20MB para suportar vídeos curtos
                     ->required(),
-                TextInput::make('link'),
+                TextInput::make('link')
+                    ->url(),
                 DatePicker::make('inicio')
                     ->required(),
                 DatePicker::make('fim')
@@ -37,6 +42,7 @@ class AnuncioForm
                     ->numeric()
                     ->default(0),
                 Toggle::make('ativo')
+                    ->default(true)
                     ->required(),
             ]);
     }

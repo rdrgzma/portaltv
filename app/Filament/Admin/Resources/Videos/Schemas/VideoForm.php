@@ -7,6 +7,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\Placeholder;
+use Filament\Schemas\Components\Utilities\Get; // Importação correta para Schemas
+use Filament\Schemas\Components\Utilities\Set; // Importação correta para Schemas
 
 use Filament\Forms\Components\MorphToSelect;
 use App\Models\Admin;
@@ -60,11 +63,39 @@ class VideoForm
                             ->dehydrated() // Garante que o valor seja processado
                             ->placeholder('Gerado automaticamente'),
 
+                        TextInput::make('duracao_formatada')
+                            ->label('Duração (HH:MM:SS)')
+                            ->placeholder('00:00:00')
+                            ->mask('99:99:99') // Máscara para facilitar a entrada
+                            ->live(onBlur: true) // Atualiza quando o usuário sai do campo
+                            ->afterStateUpdated(function (Set $set, $state) {
+                                // Converte a string HH:MM:SS para segundos totais
+                                $seconds = 0;
+                                $parts = explode(':', $state);
+                                
+                                if (count($parts) === 3) {
+                                    $seconds = ($parts[0] * 3600) + ($parts[1] * 60) + $parts[2];
+                                } elseif (count($parts) === 2) {
+                                    $seconds = ($parts[0] * 60) + $parts[1];
+                                }
+
+                                // Define o valor no campo oculto que vai para o banco
+                                $set('duracao', (int) $seconds);
+                            })
+                            // Formata o valor vindo do banco (segundos) de volta para HH:MM:SS ao editar
+                            ->formatStateUsing(fn ($record) => $record ? gmdate("H:i:s", $record->duracao) : '00:00:00')
+                            ->dehydrated(false), // Não salva este campo diretamente
+
                         TextInput::make('duracao')
-                            ->label('Duração (segundos)')
+                            ->label('Total em Segundos')
                             ->numeric()
-                            ->minValue(1)
-                            ->suffix('seg'),
+                            ->readOnly() // Apenas leitura para o usuário ver o cálculo
+                            ->helperText('Este valor será salvo no banco de dados.')
+                            ->required(),
+
+                        Placeholder::make('exibicao_calculo')
+                            ->label('Tempo calculado')
+                            ->content(fn (Get $get): string => $get('duracao') . ' segundos totais'),
 
                         // Agrupamento dos Toggles para ficarem alinhados
                         Section::make('Visibilidade')

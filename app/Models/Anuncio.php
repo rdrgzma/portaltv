@@ -28,4 +28,11 @@ class Anuncio extends Model
     {
         return $this->belongsTo(Anunciante::class);
     }
+
+    public function isVideo(): bool
+    {
+        if (!$this->arquivo) return false;
+        $extension = strtolower(pathinfo($this->arquivo, PATHINFO_EXTENSION));
+        return in_array($extension, ['mp4', 'webm', 'ogg']);
+    }
 }

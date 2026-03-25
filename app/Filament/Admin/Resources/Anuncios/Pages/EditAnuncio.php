@@ -10,10 +10,20 @@ class EditAnuncio extends EditRecord
 {
     protected static string $resource = AnuncioResource::class;
 
+    public function getTitle(): string
+    {
+        $nome = $this->record?->anunciante?->nome ?? "#{$this->record?->id}";
+        return "Editar Anúncio — {$nome}";
+    }
+
     protected function getHeaderActions(): array
     {
         return [
-            DeleteAction::make(),
+            DeleteAction::make()->label('Excluir anúncio'),
         ];
+    }
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
     }
 }

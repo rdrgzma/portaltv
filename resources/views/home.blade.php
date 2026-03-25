@@ -19,10 +19,10 @@
             <div class="flex-1 w-full flex flex-col gap-8">
                 
                 @if($heroType === 'video')
-                    <div class="w-full shadow-2xl rounded-2xl overflow-hidden border border-slate-800 bg-black aspect-video relative group">
+                    <div id="player-container-main" class="w-full shadow-2xl rounded-2xl overflow-hidden border border-slate-800 bg-black aspect-video relative group">
                         
                         {{-- INÍCIO DO PLAYER WEBTV (Substituiu o Livewire) --}}
-                        <div id="webtv-youtube-player" class="absolute inset-0 w-full h-full pointer-events-none"></div>
+                        <div id="webtv-youtube-player" class="absolute inset-0 w-full h-full"></div>
                         
                         <button id="webtv-unmute-btn" class="absolute inset-0 w-full h-full z-10 flex items-center justify-center bg-black/40 text-white font-bold tracking-widest uppercase cursor-pointer transition hover:bg-black/20" onclick="ativarSom()" style="display: none;">
                             <span class="bg-red-600 px-4 py-2 rounded-full animate-pulse shadow-[0_0_15px_rgba(220,38,38,0.7)] text-xs md:text-sm">
@@ -99,7 +99,7 @@
                                         mute: 1,          // Mutado para permitir Autoplay
                                         controls: 0,      // Sem controles na tela
                                         disablekb: 1,     // Sem controle por teclado
-                                        fs: 0,            // Sem tela cheia nativa do YT
+                                        fs: 1,            // Habilita tela cheia nativa
                                         modestbranding: 1,
                                         rel: 0,
                                         start: startSeconds 
@@ -126,12 +126,37 @@
                                     document.getElementById('webtv-unmute-btn').style.display = 'none';
                                 }
                             }
+
+                            // 7. Função de Tela Cheia Customizada
+                            function toggleFullScreen() {
+                                const container = document.getElementById('player-container-main');
+                                if (!document.fullscreenElement) {
+                                    if (container.requestFullscreen) {
+                                        container.requestFullscreen();
+                                    } else if (container.webkitRequestFullscreen) { /* Safari */
+                                        container.webkitRequestFullscreen();
+                                    } else if (container.msRequestFullscreen) { /* IE11 */
+                                        container.msRequestFullscreen();
+                                    }
+                                } else {
+                                    if (document.exitFullscreen) {
+                                        document.exitFullscreen();
+                                    }
+                                }
+                            }
                         </script>
                         {{-- FIM DO PLAYER WEBTV --}}
 
                         <div class="absolute top-4 left-4 z-20 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider animate-pulse">
                             No Ar
                         </div>
+
+                        {{-- Botão Fullscreen --}}
+                        <button onclick="toggleFullScreen()" class="absolute bottom-4 right-4 z-20 p-2 bg-black/60 hover:bg-black/90 text-white rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 shadow-lg border border-white/10" title="Tela Cheia">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+                            </svg>
+                        </button>
                     </div>
                 @else
                     <div class="w-full shadow-2xl rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 aspect-video relative group">

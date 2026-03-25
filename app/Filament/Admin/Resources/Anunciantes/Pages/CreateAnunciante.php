@@ -8,4 +8,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateAnunciante extends CreateRecord
 {
     protected static string $resource = AnuncianteResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

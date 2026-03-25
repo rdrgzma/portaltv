@@ -8,4 +8,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateImovel extends CreateRecord
 {
     protected static string $resource = ImovelResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

@@ -23,6 +23,10 @@ class AnuncioResource extends Resource
      protected static string | UnitEnum | null $navigationGroup = 'Anúncios';
      protected static ?string $navigationLabel = 'Anúncios';
 
+    public static function getMaxContentWidth(): string
+    {
+        return 'full';
+    }
 
     protected static ?string $recordTitleAttribute = 'anunciante_id';
 
